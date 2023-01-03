@@ -1,0 +1,58 @@
+#version of docker-compose
+version: '3.9'
+
+services:
+# database service
+  db:
+    #official postgres image
+    image: postgres:14-alpine
+    ports:
+      - '5432:5432'
+
+
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+
+    volumes:
+      - ./data/db:/var/lib/postgresql/data/
+
+
+# frontend service
+  frontend:
+    #build context
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+
+    ports:
+      - '3000:3000'
+
+    volumes: 
+      - ./frontend:/app/frontend
+
+#ensure that the backend is running before starting the frontend
+    depends_on: 
+      - backend
+    
+#backend service
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=postgres
+
+    ports: 
+      - '8000:8000'
+    
+    volumes: 
+    - ./backend:/app/backend
+
+  #ensures that the database is running before starting the backend.
+    depends_on:
+      - db
