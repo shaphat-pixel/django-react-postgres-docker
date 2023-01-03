@@ -1,5 +1,5 @@
 #Base image
-FROM node:16-alpine
+FROM node:17-alpine
 
 #setting working directory
 WORKDIR /app/frontend/
@@ -12,6 +12,8 @@ RUN npm install
 
 #copying our code content to the working directorys
 COPY . /app/frontend
+
+EXPOSE 3000
 
 #server starting command
 CMD ["npm", "start"]

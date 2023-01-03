@@ -19,23 +19,6 @@ services:
       - ./data/db:/var/lib/postgresql/data/
 
 
-# frontend service
-  frontend:
-    #build context
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-
-    ports:
-      - '3000:3000'
-
-    volumes: 
-      - ./frontend:/app/frontend
-
-#ensure that the backend is running before starting the frontend
-    depends_on: 
-      - backend
-    
 #backend service
   backend:
     build: 
@@ -56,3 +39,25 @@ services:
   #ensures that the database is running before starting the backend.
     depends_on:
       - db
+
+
+# frontend service
+  frontend:
+    #build context
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+
+    ports:
+      - '3000:3000'
+
+    stdin_open: true
+    tty: true
+
+    #volumes: 
+     # - ./frontend:/app/frontend
+
+#ensure that the backend is running before starting the frontend
+    depends_on: 
+      - backend
+    
